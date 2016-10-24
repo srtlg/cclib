@@ -1377,7 +1377,7 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         doctest.testmod(qchemparser, verbose=False)
 
-    if len(sys.argv) == 2:
+    if len(sys.argv) >= 2:
         parser = qchemparser.QChem(sys.argv[1])
         data = parser.parse()
 
