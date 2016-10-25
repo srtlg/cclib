@@ -1,0 +1,16 @@
+rtype='qctddft'
+rfile='../dvb_td.out'
+read_libwfa=False
+TDA=True
+mo_file='../dvb_td.mld'
+coor_file='dvb_td.mol'
+coor_format='mol'
+at_lists=[[1, 6, 2, 3, 7, 4, 8, 5, 9, 10], [11, 13, 12, 14, 15], [16, 17, 18, 19, 20]]
+eh_pop=1
+comp_ntos=True
+jmol_orbitals=True
+molden_orbitals=True
+alphabeta=False
+coor_file='dvb_td.mol'
+coor_format='mol'
+prop_list=['Om', 'POS', 'PR', 'CT', 'COH', 'CTnt', 'PRNTO', 'Z_HE', 'RMSeh']
