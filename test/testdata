@@ -36,6 +36,8 @@ Basis     ORCA        GenericBasisTest      basicORCA3.0          dvb_sp.out
 Basis     Psi         GenericBasisTest      basicPsi4.0           dvb_sp_rhf.out
 Basis     Psi         GenericBasisTest      basicPsi4.0           dvb_sp_rks.out
 Basis     QChem       GenericBasisTest      basicQChem4.2         dvb_sp.out
+Basis     MOLDEN      GenericBasisTest      qchem_purecart_2222   dvb_sp.mld
+Basis     MOLDEN      GenericBasisTest      qchem_purecart_2222   dvb_td.mld
 
 Basis     DALTON      DALTONBigBasisTest    basicDALTON-2013      C_bigbasis.out
 Basis     DALTON      DALTONBigBasisTest    basicDALTON-2015      C_bigbasis.out
@@ -50,6 +52,7 @@ Basis     NWChem      GenericBigBasisTest   basicNWChem6.0        C_bigbasis.out
 Basis     NWChem      GenericBigBasisTest   basicNWChem6.5        C_bigbasis.out
 Basis     Psi         PsiBigBasisTest       basicPsi4.0           C_bigbasis.out
 Basis     QChem       QChemBigBasisTest     basicQChem4.2         C_bigbasis.out
+Basis     MOLDEN      GenericBigBasisTest   qchem_purecart_2222   C_bigbasis.mld
 
 CC        DALTON      GenericCCTest         basicDALTON-2013      water_ccsdt.out
 CC        DALTON      GenericCCTest         basicDALTON-2015      water_ccsdt.out
@@ -195,6 +198,7 @@ SP        Psi         Psi3SPTest            basicPsi3             dvb_sp_hf.out
 SP        Psi         GenericSPTest         basicPsi4.0           dvb_sp_rhf.out
 SP        Psi         GenericSPTest         basicPsi4.0           dvb_sp_rks.out
 SP        QChem       GenericSPTest         basicQChem4.2         dvb_sp.out
+SP        MOLDEN      GenericSPTest         qchem_purecart_2222   dvb_sp.mld
 
 SPun      ADF         GenericSPunTest       basicADF2007.01       dvb_un_sp.adfout
 SPun      ADF         GenericSPunTest       basicADF2013.01       dvb_un_sp.adfout
@@ -222,6 +226,7 @@ SPun      Psi         GenericROSPTest       basicPsi4.0           dvb_sp_rohf.ou
 SPun      Psi         GenericSPunTest       basicPsi4.0           dvb_sp_uhf.out
 SPun      Psi         GenericSPunTest       basicPsi4.0           dvb_sp_uks.out
 SPun      QChem       GenericSPunTest       basicQChem4.2         dvb_sp_un.out
+SPun      MOLDEN      GenericSPunTest       qchem_purecart_2222   dvb_sp_un.mld
 
 TD        ADF         ADFTDDFTTest          basicADF2007.01       dvb_td.adfout
 TD        ADF         ADFTDDFTTest          basicADF2013.01       dvb_td.adfout

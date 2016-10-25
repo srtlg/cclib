@@ -28,6 +28,7 @@ sys.path.append(os.path.join(__filedir__, 'data'))
 parser_names = [
     "ADF", "DALTON", "GAMESS", "GAMESSUK", "Gaussian",
     "Jaguar", "Molpro", "NWChem", "ORCA", "Psi", "QChem",
+    "MOLDEN",
 ]
 all_parsers = {name: getattr(cclib.parser, name) for name in parser_names}
 

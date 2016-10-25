@@ -20,6 +20,7 @@ from .gamessparser import GAMESS
 from .gamessukparser import GAMESSUK
 from .gaussianparser import Gaussian
 from .jaguarparser import Jaguar
+from .moldenparser import MOLDEN
 from .molproparser import Molpro
 from .mopacparser import MOPAC
 from .nwchemparser import NWChem
