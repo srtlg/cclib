@@ -15,10 +15,32 @@ supporting it useful.
 from __future__ import division
 from __future__ import print_function
 
+import numpy as np
 from pprint import pprint
+from collections import namedtuple
 
 from . import logfileparser
 from . import utils
+
+
+Orbital = namedtuple('Orbital', 'symmetry energy spin occupancy mocoeff'.split())
+
+
+class MOBag(object):
+    def __init__(self):
+        self.energies = []
+        self.coeff = []
+        self.syms = []
+
+    def append(self, orbital):
+        assert isinstance(orbital, Orbital)
+        self.energies.append(orbital.energy)
+        self.coeff.append(orbital.mocoeff)
+        self.syms.append(orbital.symmetry)
+
+    def __len__(self):
+        assert len(self.syms) == len(self.energies) == len(self.coeff)
+        return len(self.coeff)
 
 
 class MOLDEN(logfileparser.Logfile):
@@ -102,9 +124,65 @@ class MOLDEN(logfileparser.Logfile):
             line = next(inputfile)
         return line
 
+    @staticmethod
+    def _extract_one_mo(inputfile, line_symmetry_label, nmo):
+        kw_sym, symmetry_label = line_symmetry_label.strip().split('=')
+        assert kw_sym == 'Sym'
+        kw_ene, mo_energy = next(inputfile).strip().split('=')
+        assert kw_ene == 'Ene'
+        kw_spin, spin = next(inputfile).strip().split('=')
+        assert kw_spin == 'Spin'
+        kw_occup, occupation_number = next(inputfile).strip().split('=')
+        assert kw_occup == 'Occup'
+        if nmo is None:
+            mocoeff = []
+        else:
+            mocoeff = np.zeros([nmo])
+        i = 0
+        while True:
+            try:
+                line = next(inputfile).lstrip()
+            except StopIteration:
+                pass
+            if line.startswith('Sym') or i == nmo:
+                return line, Orbital(symmetry=symmetry_label.strip(), energy=float(mo_energy),
+                                     spin=spin.strip(), occupancy=float(occupation_number),
+                                     mocoeff=mocoeff)
+            ao_number, mo_coefficient = line.split()
+            assert int(ao_number) == i + 1
+            if nmo is None:
+                mocoeff.append(float(mo_coefficient))
+            else:
+                mocoeff[i] = float(mo_coefficient)
+            i += 1
+
     def _extract_mo(self, inputfile, line):
         if line.startswith('[MO]'):
+            nmo = None
+            alpha = MOBag()
+            beta = MOBag()
             line = next(inputfile)
+            while True:
+                if line.startswith('[') or len(line.rstrip()) == 0:
+                    break
+                line, orbital = self._extract_one_mo(inputfile, line, nmo=nmo)
+                if orbital.spin == 'Alpha':
+                    alpha.append(orbital)
+                elif orbital.spin == 'Beta':
+                    beta.append(orbital)
+                else:
+                    raise RuntimeError('unkown spin %s' % orbital.spin)
+                if nmo is None:
+                    nmo = len(orbital.mocoeff)
+            if len(beta) == 0:  # restricted system
+                self.moenergies = [np.array(alpha.energies)]
+                self.mocoeffs = [np.array(alpha.coeff)]
+                self.mosyms = [alpha.syms]
+            else:
+                self.moenergies = [np.array(alpha.energies), np.array(beta.energies)]
+                self.mocoeffs = [np.array(alpha.coeff), np.array(beta.coeff)]
+                self.mosyms = [alpha.syms, beta.syms]
+            self.set_attribute('nmo', nmo)
         return line
 
     def extract(self, inputfile, line):
@@ -116,6 +194,8 @@ class MOLDEN(logfileparser.Logfile):
         line = self._extract_atoms(inputfile, line)
         line = self._extract_gto(inputfile, line)
         line = self._extract_mo(inputfile, line)
+        # TODO: detect spherical wavefunctions
+        # TODO: check nmo and nbasis based on gbasis
         if line.startswith('['):
             raise RuntimeError('unhandled section %s' % line.strip())
 
