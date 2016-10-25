@@ -143,7 +143,7 @@ class MOLDEN(logfileparser.Logfile):
             try:
                 line = next(inputfile).lstrip()
             except StopIteration:
-                pass
+                line = ''
             if line.startswith('Sym') or i == nmo:
                 return line, Orbital(symmetry=symmetry_label.strip(), energy=float(mo_energy),
                                      spin=spin.strip(), occupancy=float(occupation_number),
