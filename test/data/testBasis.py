@@ -146,6 +146,10 @@ class QChemBigBasisTest(GenericBigBasisTest):
     spherical = True
 
 
+class AllSphericalBasisTest(GenericBasisTest):
+    spherical = True
+
+
 if __name__=="__main__":
 
     import sys

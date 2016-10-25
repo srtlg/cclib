@@ -53,7 +53,7 @@ Basis     NWChem      GenericBigBasisTest   basicNWChem6.5        C_bigbasis.out
 Basis     Psi         PsiBigBasisTest       basicPsi4.0           C_bigbasis.out
 Basis     QChem       QChemBigBasisTest     basicQChem4.2         C_bigbasis.out
 Basis     MOLDEN      GenericBigBasisTest   qchem_purecart_2222   C_bigbasis.mld
-Basis     MOLDEN      GenericBigBasisTest   qchem_purecart_2111   C_bigbasis.mld
+Basis     MOLDEN      AllSphericalBasisTest qchem_purecart_2111   C_bigbasis.mld
 
 CC        DALTON      GenericCCTest         basicDALTON-2013      water_ccsdt.out
 CC        DALTON      GenericCCTest         basicDALTON-2015      water_ccsdt.out
