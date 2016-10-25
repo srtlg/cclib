@@ -106,12 +106,26 @@ class MOLDEN(logfileparser.Logfile):
             if len(line) == 0:
                 break
             shell_label, number_of_primitives, one = line.split()
+            number_of_primitives = int(number_of_primitives)
             assert float(one) == 1.0
-            contraction = []
-            for i in range(int(number_of_primitives)):
-                line = next(inputfile)
-                contraction.append(tuple([float(j) for j in line.split()]))
-            basis.append((shell_label, contraction))
+            if shell_label == 'SP':
+                contraction_s = []
+                contraction_p = []
+                for i in range(number_of_primitives):
+                    line = next(inputfile)
+                    fields = [float(j) for j in line.split()]
+                    assert len(fields) == 3
+                    contraction_s.append((fields[0], fields[1]))
+                    contraction_p.append((fields[0], fields[2]))
+                basis.append(('S', contraction_s))
+                basis.append(('P', contraction_p))
+            else:
+                contraction = []
+                for i in range(number_of_primitives):
+                    line = next(inputfile)
+                    contraction.append(tuple([float(j) for j in line.split()]))
+                    assert len(contraction[-1]) == 2
+                basis.append((shell_label, contraction))
         return basis
 
     def _extract_gto(self, inputfile, line):
