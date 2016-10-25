@@ -53,6 +53,7 @@ class MOLDEN(logfileparser.Logfile):
         self.gto_section = None
         self.mo_section = None
         self.coordinate_units_bohr = None
+        self.cartesian_basis = None
 
     def __str__(self):
         """Return a string representation of the object."""
@@ -132,8 +133,11 @@ class MOLDEN(logfileparser.Logfile):
         if line.startswith('[GTO]'):
             assert hasattr(self, 'atomnos')
             self.gbasis = []
+            nbasis = 0
             for sequence in range(self.natom):
                 self.gbasis.append(self._extract_one_gto(sequence + 1, inputfile))
+                nbasis += len(self.gbasis[-1])
+            self.set_attribute('nbasis', nbasis)
             line = next(inputfile)
         return line
 
@@ -198,6 +202,23 @@ class MOLDEN(logfileparser.Logfile):
             self.set_attribute('nmo', nmo)
         return line
 
+    def _count_nbasis(self):
+        dfg_count = {
+            True: {'D': 6, 'F': 10, 'G': 15},
+            False: {'D': 5, 'F': 7, 'G': 9},
+        }
+        nbasis = 0
+        for aobasis in self.gbasis:
+            for shell, contraction in aobasis:
+                if shell == 'S':
+                    nbasis += 1
+                elif shell == 'P':
+                    nbasis += 3
+                else:
+                    cartesian = self.cartesian_basis[shell]
+                    nbasis += dfg_count[cartesian][shell]
+        self.set_attribute('nbasis', nbasis)
+
     def extract(self, inputfile, line):
         if self.first_line:
             if not line.startswith('[Molden Format]'):
@@ -207,10 +228,11 @@ class MOLDEN(logfileparser.Logfile):
         line = self._extract_atoms(inputfile, line)
         line = self._extract_gto(inputfile, line)
         line = self._extract_mo(inputfile, line)
+        self.cartesian_basis = {'D': True, 'F': True, 'G': True}
         # TODO: detect spherical wavefunctions
-        # TODO: check nmo and nbasis based on gbasis
         if line.startswith('['):
             raise RuntimeError('unhandled section %s' % line.strip())
+        self._count_nbasis()
 
 
 if __name__ == '__main__':
