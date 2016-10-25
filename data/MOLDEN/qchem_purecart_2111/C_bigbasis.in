@@ -1,0 +1,15 @@
+$comment
+ Carbon atom (big basis), single point, RHF/aug-cc-pVQZ
+$end
+
+$rem
+ method = hf
+ basis = aug-cc-pvqz
+ molden_format = true
+ print_orbitals = 5000
+$end
+
+$molecule
+ 0 1
+ C          -1.4152533224   0.2302217854   0.0000000000
+$end

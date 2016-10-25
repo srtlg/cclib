@@ -133,11 +133,8 @@ class MOLDEN(logfileparser.Logfile):
         if line.startswith('[GTO]'):
             assert hasattr(self, 'atomnos')
             self.gbasis = []
-            nbasis = 0
             for sequence in range(self.natom):
                 self.gbasis.append(self._extract_one_gto(sequence + 1, inputfile))
-                nbasis += len(self.gbasis[-1])
-            self.set_attribute('nbasis', nbasis)
             line = next(inputfile)
         return line
 
@@ -219,19 +216,41 @@ class MOLDEN(logfileparser.Logfile):
                     nbasis += dfg_count[cartesian][shell]
         self.set_attribute('nbasis', nbasis)
 
+    def _detect_polar_functions(self, inputfile, line):
+        self.cartesian_basis = {'D': True, 'F': True, 'G': True}
+        if line.startswith('[5D'):
+            self.cartesian_basis['D'] = False
+            if line.find('10F') > 0:
+                pass
+            else:
+                self.cartesian_basis['F'] = False
+            return next(inputfile)
+        elif line.startswith('[5D7F]'):
+            self.cartesian_basis['D'] = False
+            self.cartesian_basis['F'] = False
+            return next(inputfile)
+        elif line.startswith('[7F]'):
+            self.cartesian_basis['F'] = False
+            return next(inputfile)
+        elif line.startswith('[9G]'):
+            self.cartesian_basis['G'] = False
+            return next(inputfile)
+
     def extract(self, inputfile, line):
         if self.first_line:
             if not line.startswith('[Molden Format]'):
                 raise RuntimeError('file not in Molden format %s' % inputfile)
             self.first_line = False
             return
-        line = self._extract_atoms(inputfile, line)
-        line = self._extract_gto(inputfile, line)
-        line = self._extract_mo(inputfile, line)
-        self.cartesian_basis = {'D': True, 'F': True, 'G': True}
-        # TODO: detect spherical wavefunctions
-        if line.startswith('['):
-            raise RuntimeError('unhandled section %s' % line.strip())
+        try:
+            line = self._extract_atoms(inputfile, line)
+            line = self._extract_gto(inputfile, line)
+            line = self._extract_mo(inputfile, line)
+            line = self._detect_polar_functions(inputfile, line)
+            if line is not None and line.startswith('['):
+                raise RuntimeError('unhandled section %s' % line.strip())
+        except StopIteration:
+            pass
         self._count_nbasis()
 
 
