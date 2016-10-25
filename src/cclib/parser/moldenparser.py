@@ -16,7 +16,6 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-from pprint import pprint
 from collections import namedtuple
 
 from . import logfileparser
@@ -203,6 +202,7 @@ class MOLDEN(logfileparser.Logfile):
 if __name__ == '__main__':
     import sys
     import doctest, moldenparser
+    from pprint import pprint
 
     if len(sys.argv) == 1:
         doctest.testmod(moldenparser, verbose=False)

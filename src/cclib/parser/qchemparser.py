@@ -1373,6 +1373,7 @@ class QChem(logfileparser.Logfile):
 if __name__ == '__main__':
     import sys
     import doctest, qchemparser
+    from pprint import pprint
 
     if len(sys.argv) == 1:
         doctest.testmod(qchemparser, verbose=False)
@@ -1384,4 +1385,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 2:
         for i in range(len(sys.argv[2:])):
             if hasattr(data, sys.argv[2 + i]):
-                print(getattr(data, sys.argv[2 + i]))
+                pprint(getattr(data, sys.argv[2 + i]))
