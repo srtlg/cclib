@@ -31,6 +31,7 @@ from ..parser.gamessukparser import GAMESSUK
 from ..parser.gaussianparser import Gaussian
 from ..parser.jaguarparser import Jaguar
 from ..parser.molproparser import Molpro
+from ..parser.moldenparser import MOLDEN
 from ..parser.mopacparser import MOPAC
 from ..parser.nwchemparser import NWChem
 from ..parser.orcaparser import ORCA
@@ -77,6 +78,7 @@ triggers = [
     (ORCA,      ["O   R   C   A"],                                  True),
     (Psi,       ["PSI", "Ab Initio Electronic Structure"],          True),
     (QChem,     ["A Quantum Leap Into The Future Of Chemistry"],    True),
+    (MOLDEN,    ["[Molden Format]"],                                True),
 
 ]
 
