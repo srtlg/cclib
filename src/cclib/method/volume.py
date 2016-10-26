@@ -51,7 +51,7 @@ class Volume(object):
         self.topcorner = topcorner
         self.numpts = []
         for i in range(3):
-            self.numpts.append(int((self.topcorner[i]-self.origin[i])/self.spacing[i]                                   + 1) )
+            self.numpts.append(int((self.topcorner[i] - self.origin[i]) / self.spacing[i] + 1))
         self.data = numpy.zeros( tuple(self.numpts), "d")
 
     def __str__(self):
