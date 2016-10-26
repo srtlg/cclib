@@ -30,6 +30,7 @@ class MOBag(object):
         self.energies = []
         self.coeff = []
         self.syms = []
+        self.homo = None
 
     def append(self, orbital):
         assert isinstance(orbital, Orbital)
@@ -176,6 +177,7 @@ class MOLDEN(logfileparser.Logfile):
             alpha = MOBag()
             beta = MOBag()
             line = next(inputfile)
+            previous_occupancy = -1
             while True:
                 if line.startswith('[') or len(line.rstrip()) == 0:
                     break
@@ -186,16 +188,24 @@ class MOLDEN(logfileparser.Logfile):
                     beta.append(orbital)
                 else:
                     raise RuntimeError('unkown spin %s' % orbital.spin)
+                if previous_occupancy is not None and previous_occupancy != orbital.occupancy:
+                    if orbital.spin == 'Alpha':
+                        alpha.homo = len(alpha) - 2
+                    elif orbital.spin == 'Beta':
+                        beta.homo = len(beta) - 2
+                previous_occupancy = orbital.occupancy
                 if nmo is None:
                     nmo = len(orbital.mocoeff)
             if len(beta) == 0:  # restricted system
                 self.moenergies = [np.array(alpha.energies)]
                 self.mocoeffs = [np.array(alpha.coeff)]
                 self.mosyms = [alpha.syms]
+                self.set_attribute('homos', [alpha.homo])
             else:
                 self.moenergies = [np.array(alpha.energies), np.array(beta.energies)]
                 self.mocoeffs = [np.array(alpha.coeff), np.array(beta.coeff)]
                 self.mosyms = [alpha.syms, beta.syms]
+                self.set_attribute('homos', [alpha.homo, beta.homo])
             self.set_attribute('nmo', nmo)
         return line
 
