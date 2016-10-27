@@ -13,7 +13,7 @@ except ImportError:
     # Fail silently for now.
     pass
 
-from cclib.parser.data import ccData
+import cclib.parser.data
 
 
 def makeopenbabel(atomcoords, atomnos, charge=0, mult=1):
@@ -63,7 +63,7 @@ def makecclib(mol):
         attributes['atomcoords'].append([atom.GetX(), atom.GetY(), atom.GetZ()])
         attributes['atommasses'].append(atom.GetAtomicMass())
         attributes['atomnos'].append(atom.GetAtomicNum())
-    return ccData(attributes)
+    return cclib.parser.data.ccData(attributes)
 
 def readfile(fname, format):
     """Read a file with OpenBabel and extract cclib attributes."""
