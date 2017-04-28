@@ -11,6 +11,7 @@
 from __future__ import print_function
 
 import numpy
+import re
 
 from . import logfileparser
 from . import utils
@@ -465,6 +466,8 @@ class ORCA(logfileparser.Logfile):
             for n in range(self.natom):
                 self.atombasis.append([])
 
+            mo_float = re.compile(r' *-?\d+\.\d{6,6}')
+
             for spin in range(len(self.moenergies)):
 
                 if spin == 1:
@@ -494,10 +497,7 @@ class ORCA(logfileparser.Logfile):
                             self.aonames.append("%s%i_%s" % (atomname, num+1, orbital))
                             self.atombasis[num].append(j)
 
-                        temp = []
-                        vals = line[16:-1]  # -1 to remove the last blank space
-                        for k in range(0, len(vals), 10):
-                            temp.append(float(vals[k:k+10]))
+                        temp = [float(val) for val in mo_float.findall(line[16:-1])]
                         mocoeffs[spin][i:i+size, j] = temp
 
             self.mocoeffs = mocoeffs
